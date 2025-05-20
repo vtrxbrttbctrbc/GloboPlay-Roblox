@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Globoplay Fake</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+    }
+    header {
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+    }
+    .logo {
+      color: red;
+      font-weight: bold;
+    }
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .banner, .section {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .banner img {
+      max-width: 90%;
+      border-radius: 10px;
+    }
+    .channels {
+      display: flex;
+      justify-content: center;
+      margin: 30px;
+    }
+    .channels button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      background: #222;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #000;
+    }
+    #login input {
+      margin: 10px;
+      padding: 10px;
+      width: 200px;
+    }
+    #login button {
+      padding: 10px 20px;
+    }
+    .media {
+      text-align: center;
+      margin-top: 30px;
+    }
+    video {
+      width: 80%;
+      border: 2px solid white;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <h2>Login</h2>
+  <input type="text" id="username" placeholder="Nome">
+  <input type="password" id="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+</div>
+
+<div id="site" style="display: none;">
+  <header>
+    <div class="logo">globoplay 📺</div>
+    <nav>
+      <img src="049f107f-2b89-48bf-8760-ee0c2fbdcc0d.png" alt="Pesquisar" style="height: 20px; vertical-align: middle;">
+      <a href="#" onclick="show('home')">Tela Inicial</a>
+      <a href="#" onclick="show('filmes')">Filmes</a>
+      <a href="#" onclick="show('series')">Série</a>
+    </nav>
+  </header>
+
+  <div id="home" class="section">
+    <div class="banner">
+      <img src="banner acidente uber.png" onclick="verFilme()" alt="Acidente Uber">
+    </div>
+    <div class="channels">
+      <button>Ao Vivo</button>
+      <button>Canal 2</button>
+      <button>Canal 3</button>
+      <button>Canal 4</button>
+      <button>Canal 5</button>
+    </div>
+  </div>
+
+  <div id="filmes" class="section" style="display:none;">
+    <h2>Filmes</h2>
+    <img src="banner acidente uber.png" alt="Acidente Uber" onclick="verFilme()" style="cursor:pointer;">
+  </div>
+
+  <div id="series" class="section" style="display:none;">
+    <h2>Séries</h2>
+    <img src="ep1 temp1.png" alt="Zé o Atrapalhado" onclick="verSerie()" style="cursor:pointer;">
+  </div>
+
+  <div id="verFilme" class="media" style="display:none;">
+    <h2>Acidente Uber</h2>
+    <video src="0402.mp4" controls onplay="addView('uber')"></video>
+    <p>Visualizações: <span id="views-uber">0</span></p>
+  </div>
+
+  <div id="verSerie" class="media" style="display:none;">
+    <h2>Zé o Atrapalhado - Ep. 1</h2>
+    <video src="0430_ZTaGcRb0.mp4" controls onplay="addView('ze')"></video>
+    <p>Visualizações: <span id="views-ze">0</span></p>
+  </div>
+</div>
+
+<script>
+  function login() {
+    const nome = document.getElementById("username").value;
+    const senha = document.getElementById("password").value;
+    if (nome && senha) {
+      localStorage.setItem("user", nome);
+      document.getElementById("login").style.display = "none";
+      document.getElementById("site").style.display = "block";
+      loadViews();
+    } else {
+      alert("Digite nome e senha.");
+    }
+  }
+
+  function show(section) {
+    ['home', 'filmes', 'series', 'verFilme', 'verSerie'].forEach(id => {
+      document.getElementById(id).style.display = "none";
+    });
+    document.getElementById(section).style.display = "block";
+  }
+
+  function verFilme() {
+    show("verFilme");
+  }
+
+  function verSerie() {
+    show("verSerie");
+  }
+
+  function addView(id) {
+    const user = localStorage.getItem("user");
+    if (!user) return;
+    const key = `views_${user}_${id}`;
+    let count = parseInt(localStorage.getItem(key) || 0);
+    count++;
+    localStorage.setItem(key, count);
+    document.getElementById(`views-${id}`).textContent = count;
+  }
+
+  function loadViews() {
+    const user = localStorage.getItem("user");
+    if (!user) return;
+    ["uber", "ze"].forEach(id => {
+      const count = localStorage.getItem(`views_${user}_${id}`) || 0;
+      document.getElementById(`views-${id}`).textContent = count;
+    });
+  }
+
+  // Checar login automático
+  if (localStorage.getItem("user")) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("site").style.display = "block";
+    loadViews();
+  }
+</script>
+
+</body>
+</html>
